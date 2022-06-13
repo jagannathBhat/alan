@@ -1,9 +1,6 @@
 import "./App.css";
+import routes from "./routes";
 
-const App = () => (
-  <div className="popup">
-    <h1>alan</h1>
-  </div>
-);
+const App = () => <>{routes[window.location.hash] ?? routes.default}</>;
 
 export default App;
