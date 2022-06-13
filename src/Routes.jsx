@@ -4,7 +4,7 @@ import Options from "./components/Options";
 import Popup from "./components/Popup";
 
 const routes = {
-  default: <>404</>,
+  default: <h1>Oops! This URL does not exist.</h1>,
   "": <Popup />,
   "#options": <Options />,
 };
