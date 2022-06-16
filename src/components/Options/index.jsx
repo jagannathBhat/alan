@@ -13,10 +13,10 @@ const Options = () => {
   const promptMicrophoneAccess = async () => {
     try {
       await navigator.mediaDevices.getUserMedia({ audio: true });
-      queryMicrophoneAccess();
     } catch (error) {
       console.error(error);
     }
+    queryMicrophoneAccess();
   };
 
   useEffect(() => {
@@ -24,23 +24,26 @@ const Options = () => {
   }, []);
 
   const microphoneOptions = {
-    denied: <h2>access denied</h2>,
-    granted: (
-      <div className="w-80">
-        <select></select>
-      </div>
-    ),
-    prompt: (
-      <button className="button" onClick={promptMicrophoneAccess}>
-        allow access
-      </button>
-    ),
-  };
-
-  const messages = {
-    denied: "please visit chrome setting to enable microphone access",
-    granted: "please open the extension to continue",
-    prompt: "",
+    denied: {
+      component: <h2>access denied</h2>,
+      message: "please visit chrome setting to enable microphone access",
+    },
+    granted: {
+      component: (
+        <div className="w-80">
+          <select></select>
+        </div>
+      ),
+      message: "please open the extension to continue",
+    },
+    prompt: {
+      component: (
+        <button className="button" onClick={promptMicrophoneAccess}>
+          allow access
+        </button>
+      ),
+      message: "please allow microphone access",
+    },
   };
 
   return (
@@ -48,10 +51,10 @@ const Options = () => {
       <h1>options</h1>
       <div className="option-item">
         <h2 style={{ fontWeight: "bold" }}>microphone access</h2>
-        {microphoneOptions[microphoneAccess]}
+        {microphoneOptions[microphoneAccess].component}
       </div>
       <p style={{ marginTop: 24, textAlign: "center" }}>
-        {messages[microphoneAccess]}
+        {microphoneOptions[microphoneAccess].message}
       </p>
     </div>
   );
