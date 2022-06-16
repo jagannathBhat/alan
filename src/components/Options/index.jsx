@@ -8,7 +8,6 @@ const Options = () => {
   const queryMicrophoneAccess = async () => {
     const { state } = await queryPermission({ name: "microphone" });
     setMicrophoneAccess(state);
-    console.log(state);
   };
 
   const promptMicrophoneAccess = async () => {
