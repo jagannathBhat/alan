@@ -1,3 +1,36 @@
+.button {
+  background-color: #212121;
+  border: none;
+  color: #e0e0e0;
+  cursor: pointer;
+  font-size: 14px;
+  padding: 12px 18px;
+}
+
+.button:hover {
+  background-color: #424242;
+}
+
+.option-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.option-item h2 {
+  font-weight: normal;
+}
+
+.page {
+  padding: 24px;
+  margin: 0px auto;
+  max-width: 960px;
+}
+
+.page h1 {
+  font-size: 48px;
+}
+
 .popup {
   min-width: 300px;
   min-height: 300px;
