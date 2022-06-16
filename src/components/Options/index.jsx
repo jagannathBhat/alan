@@ -29,16 +29,17 @@ const Options = () => {
       message: "please visit chrome setting to enable microphone access",
     },
     granted: {
-      component: <select></select>,
+      component: <h2>access granted</h2>,
       message: "please open the extension to continue",
     },
     prompt: {
       component: (
         <button className="button" onClick={promptMicrophoneAccess}>
-          allow access
+          allow recording
         </button>
       ),
-      message: "please allow microphone access",
+      message:
+        "the extension needs access to your microphone to start recording",
     },
   };
 
