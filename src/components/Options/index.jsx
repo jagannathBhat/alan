@@ -29,11 +29,7 @@ const Options = () => {
       message: "please visit chrome setting to enable microphone access",
     },
     granted: {
-      component: (
-        <div className="w-80">
-          <select></select>
-        </div>
-      ),
+      component: <select></select>,
       message: "please open the extension to continue",
     },
     prompt: {
