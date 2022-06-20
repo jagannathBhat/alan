@@ -17,12 +17,7 @@ const useRecorder = () => {
   };
 
   const resetRecorder = () => {
-    if (
-      !localRecorder.current ||
-      localRecorder.current.state === RECORDING_STATUSES.INACTIVE
-    ) {
-      return;
-    }
+    if (localRecorder.current?.state === RECORDING_STATUSES.INACTIVE) return;
 
     localStream.current.getTracks().forEach(track => track.stop());
     localRecorder.current.stop();
@@ -39,8 +34,8 @@ const useRecorder = () => {
   const enable = async newStream => {
     localStream.current = newStream;
     localRecorder.current = new MediaRecorder(localStream.current);
-    recordedChunks.current = [];
     localRecorder.current.ondataavailable = handleDataAvailable;
+    recordedChunks.current = [];
   };
 
   const pause = () => localRecorder.current.pause();
