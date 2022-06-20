@@ -11,6 +11,19 @@
   background-color: #424242;
 }
 
+.controls {
+  display: flex;
+}
+
+.controls button {
+  margin-right: 18px;
+  padding: 6px 9px;
+}
+
+.controls button:last-child {
+  margin-right: 0px;
+}
+
 .option-item {
   display: flex;
   align-items: center;
