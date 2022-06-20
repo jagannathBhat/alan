@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 
+import ButtonLink from "./ButtonLink";
+
 const Popup = () => {
   const [microphoneAccess, setMicrophoneAccess] = useState("prompt");
 
@@ -14,16 +16,16 @@ const Popup = () => {
 
   const buttons = {
     granted: {
-      component: <button className="button">open recorder</button>,
+      component: <ButtonLink label="open recorder" url="#recording" />,
       message: "click on this button to open recording page",
     },
     default: {
       component: (
-        <a href="#options" target="_blank" rel="noopener noreferrer">
-          <button className="button" style={{ marginTop: 12 }}>
-            allow recording
-          </button>
-        </a>
+        <ButtonLink
+          buttonProps={{ style: { marginTop: 12 } }}
+          label="allow recording"
+          url="#options"
+        />
       ),
       subtitle:
         "the extension requires recording permission to record audio while taking the test",
