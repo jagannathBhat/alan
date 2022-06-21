@@ -28,20 +28,28 @@ const useRecorder = () => {
   // Exported functions
 
   const enable = async () => {
-    console.log("first");
-    const audio = await navigator.mediaDevices.getUserMedia({
-      audio: { deviceId: "default" },
-    });
-    const audioTrack = audio.getTracks()[0];
+    try {
+      const audio = await navigator.mediaDevices.getUserMedia({
+        audio: { deviceId: "default" },
+      });
+      const audioTrack = audio.getTracks()[0];
 
-    const screen = await navigator.mediaDevices.getDisplayMedia();
-    const screenTrack = screen.getTracks()[0];
-    screenTrack.onended = resetRecorder;
+      const screen = await navigator.mediaDevices.getDisplayMedia();
+      const screenTrack = screen.getTracks()[0];
+      screenTrack.onended = () => {
+        resetRecorder();
+        setStatus(RECORDING_STATUSES.ERROR);
+      };
 
-    localStream.current = new MediaStream([audioTrack, screenTrack]);
-    localRecorder.current = new MediaRecorder(localStream.current);
-    localRecorder.current.ondataavailable = handleDataAvailable;
-    recordedChunks.current = [];
+      localStream.current = new MediaStream([audioTrack, screenTrack]);
+      localRecorder.current = new MediaRecorder(localStream.current);
+      localRecorder.current.ondataavailable = handleDataAvailable;
+      recordedChunks.current = [];
+      setStatus(RECORDING_STATUSES.READY);
+    } catch (error) {
+      console.error(error);
+      setStatus(RECORDING_STATUSES.ERROR);
+    }
   };
 
   const pause = () => localRecorder.current.pause();
