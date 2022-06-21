@@ -39,6 +39,11 @@ const Popup = () => {
       <p className="subtitle">
         {buttons[microphoneAccess]?.subtitle ?? buttons.default.subtitle}
       </p>
+      <div className="controls">
+        <button className="button">Resume/Pause</button>
+        <button className="button">Stop</button>
+        <button className="button">Cancel</button>
+      </div>
     </div>
   );
 };
