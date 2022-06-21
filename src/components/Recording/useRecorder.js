@@ -22,17 +22,23 @@ const useRecorder = () => {
     localStream.current.getTracks().forEach(track => track.stop());
     localRecorder.current.stop();
     setStatus(RECORDING_STATUSES.INACTIVE);
+    localRecorder.current = localStream.current = null;
   };
 
   // Exported functions
 
-  const cancel = () => {
-    resetRecorder();
-    localRecorder.current = localStream.current = null;
-  };
+  const enable = async () => {
+    console.log("first");
+    const audio = await navigator.mediaDevices.getUserMedia({
+      audio: { deviceId: "default" },
+    });
+    const audioTrack = audio.getTracks()[0];
 
-  const enable = async newStream => {
-    localStream.current = newStream;
+    const screen = await navigator.mediaDevices.getDisplayMedia();
+    const screenTrack = screen.getTracks()[0];
+    screenTrack.onended = resetRecorder;
+
+    localStream.current = new MediaStream([audioTrack, screenTrack]);
     localRecorder.current = new MediaRecorder(localStream.current);
     localRecorder.current.ondataavailable = handleDataAvailable;
     recordedChunks.current = [];
@@ -43,19 +49,19 @@ const useRecorder = () => {
   const resume = () => localRecorder.current.resume();
 
   const start = () => {
-    setStatus(RECORDING_STATUSES.ACTIVE);
     localRecorder.current.start(100);
+    setStatus(RECORDING_STATUSES.ACTIVE);
   };
 
   const stop = () => {
     if (!localRecorder.current) return null;
 
     resetRecorder();
-    return new Blob(recordedChunks.current);
+    return new Blob(recordedChunks.current, { type: "video/webm" });
   };
 
   return {
-    cancel,
+    cancel: resetRecorder,
     enable,
     pause,
     resume,
