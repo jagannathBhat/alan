@@ -7,6 +7,7 @@ const useRecorder = () => {
   const localStream = useRef(null);
   const recordedChunks = useRef([]);
   const [status, setStatus] = useState(RECORDING_STATUSES.PROMPT);
+  const [isPaused, setIsPaused] = useState(false);
 
   // Non exported functions
 
@@ -22,43 +23,62 @@ const useRecorder = () => {
     localStream.current.getTracks().forEach(track => track.stop());
     localRecorder.current.stop();
     setStatus(RECORDING_STATUSES.INACTIVE);
+    localRecorder.current = localStream.current = null;
   };
 
   // Exported functions
 
-  const cancel = () => {
-    resetRecorder();
-    localRecorder.current = localStream.current = null;
+  const enable = async () => {
+    try {
+      const audio = await navigator.mediaDevices.getUserMedia({
+        audio: { deviceId: "default" },
+      });
+      const audioTrack = audio.getTracks()[0];
+
+      const screen = await navigator.mediaDevices.getDisplayMedia();
+      const screenTrack = screen.getTracks()[0];
+      screenTrack.onended = () => {
+        resetRecorder();
+        setStatus(RECORDING_STATUSES.ERROR);
+      };
+
+      localStream.current = new MediaStream([audioTrack, screenTrack]);
+      localRecorder.current = new MediaRecorder(localStream.current);
+      localRecorder.current.ondataavailable = handleDataAvailable;
+      recordedChunks.current = [];
+      setStatus(RECORDING_STATUSES.READY);
+    } catch (error) {
+      console.error(error);
+      setStatus(RECORDING_STATUSES.ERROR);
+    }
   };
 
-  const enable = async newStream => {
-    localStream.current = newStream;
-    localRecorder.current = new MediaRecorder(localStream.current);
-    localRecorder.current.ondataavailable = handleDataAvailable;
-    recordedChunks.current = [];
+  const resumeOrPause = () => {
+    setIsPaused(prevState => {
+      prevState
+        ? localRecorder.current.resume()
+        : localRecorder.current.pause();
+      return !prevState;
+    });
   };
-
-  const pause = () => localRecorder.current.pause();
-
-  const resume = () => localRecorder.current.resume();
 
   const start = () => {
-    setStatus(RECORDING_STATUSES.ACTIVE);
     localRecorder.current.start(100);
+    setStatus(RECORDING_STATUSES.ACTIVE);
   };
 
   const stop = () => {
     if (!localRecorder.current) return null;
 
     resetRecorder();
-    return new Blob(recordedChunks.current);
+    return new Blob(recordedChunks.current, { type: "video/webm" });
   };
 
   return {
-    cancel,
+    cancel: resetRecorder,
     enable,
-    pause,
-    resume,
+    isPaused,
+    resumeOrPause,
     start,
     status,
     stop,
