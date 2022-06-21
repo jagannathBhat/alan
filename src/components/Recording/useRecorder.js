@@ -7,6 +7,7 @@ const useRecorder = () => {
   const localStream = useRef(null);
   const recordedChunks = useRef([]);
   const [status, setStatus] = useState(RECORDING_STATUSES.PROMPT);
+  const [isPaused, setIsPaused] = useState(false);
 
   // Non exported functions
 
@@ -52,9 +53,14 @@ const useRecorder = () => {
     }
   };
 
-  const pause = () => localRecorder.current.pause();
-
-  const resume = () => localRecorder.current.resume();
+  const resumeOrPause = () => {
+    setIsPaused(prevState => {
+      prevState
+        ? localRecorder.current.resume()
+        : localRecorder.current.pause();
+      return !prevState;
+    });
+  };
 
   const start = () => {
     localRecorder.current.start(100);
@@ -71,8 +77,8 @@ const useRecorder = () => {
   return {
     cancel: resetRecorder,
     enable,
-    pause,
-    resume,
+    isPaused,
+    resumeOrPause,
     start,
     status,
     stop,
