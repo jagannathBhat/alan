@@ -5,7 +5,7 @@ import useRecorder from "./useRecorder";
 const Recording = () => {
   const recorder = useRecorder();
 
-  const stopRecording = () => {
+  const stopAndDownloadRecording = () => {
     var a = document.createElement("a");
     const url = window.URL.createObjectURL(recorder.stop());
     a.href = url;
@@ -35,7 +35,7 @@ const Recording = () => {
         <button className="button" onClick={() => recorder.resumeOrPause()}>
           {recorder.isPaused ? "Resume" : "Pause"}
         </button>
-        <button className="button" onClick={stopRecording}>
+        <button className="button" onClick={stopAndDownloadRecording}>
           Stop
         </button>
         <button className="button" onClick={() => recorder.cancel()}>
